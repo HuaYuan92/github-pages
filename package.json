@@ -1,0 +1,12 @@
+{
+  "name": "github-pages",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/HuaYuan92/github-pages.git",
+  "author": "xuyan <xuyan@cycredit.com.cn>",
+  "license": "MIT",
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  }
+}
