@@ -1,5 +1,4 @@
 ## Vue
-***
 ### 一 对MVVM的理解
 MVVM分为Model、View、ViewModel三者。
 

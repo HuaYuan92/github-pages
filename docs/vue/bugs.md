@@ -1,5 +1,4 @@
 ## bug-list
-***
 ### 一 js报Uncaught SyntaxError: Unexpected token <错误 
 vue项目 报Uncaught SyntaxError: Unexpected token < 错误，一般是路径有问题（这里说是当js引用的文件是项目路径下的文件夹时,会报这个错误）。当时出现这个问题 是因为求助我的人他用了CDN 导致  (缓存)   访问了不存在的js，然后这个404错误又重新指向了一个提示的自定义页面，由于脚本里面不允许出现标签因为标签带了<>符号，所以，就会抛出这个异常 从而报错。
 
