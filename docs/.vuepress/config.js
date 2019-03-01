@@ -26,7 +26,8 @@ module.exports = {
         sidebar: {
             '/vue/':[
                 'vue',
-                'optimised'
+                'optimised',
+                'bugs'
             ],
         }
     }
