@@ -143,4 +143,25 @@ watch: {
  *  在配置 路由时，页面和组件使用懒加载的方式引入，进一步缩小 app.bundel 的体积，在调用某个组件时再加载对应的js文件
  
  * 加一个首屏loading图，提升用户体验
-  
+ ***
+ 
+ ### 十 vue-router中hash模式和history模式对比
+ 
+ * hash 即在地址URL中的#符号，比如：http://www.ac.com/#/home。原理是：hash虽然出现在URL中，但是不会被包括在HTTP请求中，对后端完全没有影响，因此改变hash不会重新加载页面。
+ 
+ * history 利用了HTML5 History Interface中新增的pushState()和replaceState()的方法，这两个方法应用于浏览器的历史记录栈，在当前已有的 back、forward、go 的基础之上，它们提供了对历史记录进行修改的功能。只是当它们执行修改时，虽然改变了当前的URL，但浏览器不会立即向后端发送请求。
+ 
+ ### 十一 路由懒加载
+ 
+ 当执行build命令构建生产包时，我之前的项目一般都会生成一个js文件，此时js文件相对较大，可能会影响页面的加载。路由的懒加载就是把不同路由对应的组件分割成不同的代码块，然后在当路由被访问时再加载对应组件，相对打包成一整个文件来说，会更加高效。
+ ```
+ const Foo = () => import('./Foo.vue')
+
+ const router = new VueRouter({
+   routes: [
+    { path: '/foo', component: Foo }
+   ]
+ })
+ ```
+ 
+ 
