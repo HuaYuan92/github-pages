@@ -28,3 +28,16 @@ Uncaught SyntaxError: Unexpected token <
 据目击者判断，可能是由于引用路径问题，于是核查引用的文件，发现报错的全部都是第一个项目中的文件，在当前项目中完全没有加载过......
 最后改了url就没事了。是由于浏览器缓存问题？可是我强刷了啊，啊啊啊啊
 
+### 四 不算个bug,有关css中span.padding
+对span元素设置padding，对内部元素在水平方向有用，在垂直方向无用，因为span中元素在垂直方向的位置基于基线。
+```
+span{
+padding:10px
+}
+<body>
+ <span>a</span>
+</body>
+```
+此时'a'位于span水平方向居中，垂直方向居上。
+
+
