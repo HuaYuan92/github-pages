@@ -1,5 +1,5 @@
 module.exports = {
-    title: '前端技术集锦',
+    title: '日积月累',
     description: '技术积累',
     // 注入到当前页面的 HTML <head> 中的标签
     head: [
@@ -10,7 +10,7 @@ module.exports = {
         lineNumbers: true // 代码块显示行号
     },
     themeConfig: {
-        sidebarDepth: 2, // e'b将同时提取markdown中h2 和 h3 标题，显示在侧边栏上。
+        sidebarDepth: 3, // e'b将同时提取markdown中h2 和 h3 标题，显示在侧边栏上。
         lastUpdated: 'Last Updated',
         nav:[
             // { text: '前端算法', link: '/algorithm/' }, // 内部链接 以docs为根目录
@@ -25,10 +25,11 @@ module.exports = {
         ],
         sidebar: {
             '/vue/':[
+                'base',
                 'vue',
                 'optimised',
                 'bugs'
             ],
-        }
+        },
     }
 }

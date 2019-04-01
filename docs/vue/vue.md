@@ -134,6 +134,7 @@ watch: {
  如果你调研服务器端渲染 (SSR) 只是用来改善少数营销页面（例如 /, /about, /contact 等）的 SEO，那么你可能需要预渲染。无需使用 web 服务器实时动态编译 HTML，而是使用预渲染方式，在构建时 (build time) 简单地生成针对特定路由的静态 HTML 文件。优点是设置预渲染更简单，并可以将你的前端作为一个完全静态的站点。
  
  如果你使用 webpack，你可以使用 prerender-spa-plugin 轻松地添加预渲染。它已经被 Vue 应用程序广泛测试
+ 补充一点，prerender-spa-plugin这个插件有时在安装/打包时会出现问题，应该是它引用的插件出现了问题，暂时去掉了这个插件。
  ***
  
  ### 九 vue项目的优化
@@ -163,5 +164,60 @@ watch: {
    ]
  })
  ```
+ ### 十二 父子组件双向数据绑定的实现
+ 
+ 除了子组件使用$emit（）向外传值的方式之外，我们还可以通过v-model来实现父子组件的相互传值。但是双向数据绑定又会带来维护上的问题，因为子组件可以修改父组件，且在父子组件之间都没有明显的改动来源。推荐使用.sync修饰符，组件内部以'this.$emit('update:myPropName',value)'来对myPropName进行赋值。
+ ```
+v-model:
+ Vue.component('base-checkbox', {
+   model: {
+     prop: 'checked',
+     event: 'change'
+   },
+   props: {
+     checked: Boolean
+   },
+   template: `
+     <input
+       type="checkbox"
+       v-bind:checked="checked"
+       v-on:change="$emit('change', $event.target.checked)"
+     >
+   `
+ })
+ <base-checkbox v-model="lovingVue"></base-checkbox>
+ 这里的 lovingVue 的值将会传入这个名为 checked 的 prop。同时当 <base-checkbox> 触发一个 change 事件并附带一个新的值的时候，这个 lovingVue 的属性将会被更新
+ .sync:
+ <text-document v-bind:title.sync="doc.title"></text-document>
+ this.$emit('update:title', newTitle)
+ ```
+ ### 十三 生命周期钩子
+ * beforeCreate:在实例初始化之后，数据观测（data observer）和event/watcher事件配置之前被调用。貌似这时候啥也不能干，就静静得看着。
+ * created:在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
+ * beforeMount:在挂载开始之前被调用：相关的 render 函数首次被调用。 该钩子在服务器端渲染期间不被调用。
+ * mounted:el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内，该钩子在服务器端渲染期间不被调用。注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted:
+ ```
+ mounted: function () {
+   this.$nextTick(function () {
+     // Code that will run only after the
+     // entire view has been rendered
+   })
+ }
+ ```
+ * beforeUpdate:数据更新时调用，发生在虚拟 DOM 打补丁之前。这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。该钩子在服务器端渲染期间不被调用，因为只有初次渲染会在服务端进行。
+ * updated:由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作。然而在大多数情况下，你应该避免在此期间更改状态。如果要相应状态改变，通常最好使用计算属性或 watcher 取而代之。注意 updated 不会承诺所有的子组件也都一起被重绘。如果你希望等到整个视图都重绘完毕，可以用 vm.$nextTick 替换掉 updated,
+ 该钩子在服务器端渲染期间不被调用。
+ * activated:keep-alive 组件激活时调用。该钩子在服务器端渲染期间不被调用。
+ * deactivated:keep-alive 组件停用时调用,该钩子在服务器端渲染期间不被调用。
+ * beforeDestroy:实例销毁之前调用。在这一步，实例仍然完全可用,该钩子在服务器端渲染期间不被调用。
+ * destroyed:Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。该钩子在服务器端渲染期间不被调用。
+ * errorCaptured: 当捕获一个来自子孙组件的错误时被调用。此钩子会收到三个参数：错误对象、发生错误的组件实例以及一个包含错误来源信息的字符串。此钩子可以返回 false 以阻止该错误继续向上传播。                                        
+               
+
+                                
+
+                                                                           
+
+ 
  
  
