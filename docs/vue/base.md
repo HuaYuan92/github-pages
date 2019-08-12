@@ -121,3 +121,14 @@ bind 方法不会立即执行，而是返回一个改变了上下文 this 后的
    
  * 在组件中修改第三方组件库样式的其他方法：使用两个style标签，一个使用scoped，一个不使用，6不6 ，就是这么简单...
  
+### 五 发布自己的NPM包
+ * npm adduser 添加用户
+ * npm publish 发布NPM包，完事...
+ 
+### 六 将1.2版本的elementUI升级到最新版本的尝试
+ * 克隆elementUI最新版
+ * 改名，将elementUI改名为axx-element-ui
+ * 发布axx-element-ui npm包
+ * 在项目中引入axx-element-ui，修改.babelrc文件
+ * 引入成功
+ BUT：由于element最新版依赖的vue版本跟现有版本不同，所以有些UI组件的功能并不能使用，比如$attr这个API在vue2.4以后才能使用；尝试升级vue版本，各种报错，当前项目太大太老，要单独升级某个依赖并不可能，个人感觉只有全局依赖一起升级这条路，升级的话，还需要改原有的业务代码，实际上相当于重写当前项目，工作量还是蛮大的，暂时搁浅。

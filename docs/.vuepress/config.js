@@ -28,7 +28,9 @@ module.exports = {
                 'base',
                 'vue',
                 'optimised',
-                'bugs'
+                'bugs',
+                'website',
+                'data'
             ],
         },
     }
