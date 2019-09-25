@@ -132,3 +132,23 @@ bind 方法不会立即执行，而是返回一个改变了上下文 this 后的
  * 在项目中引入axx-element-ui，修改.babelrc文件
  * 引入成功
  BUT：由于element最新版依赖的vue版本跟现有版本不同，所以有些UI组件的功能并不能使用，比如$attr这个API在vue2.4以后才能使用；尝试升级vue版本，各种报错，当前项目太大太老，要单独升级某个依赖并不可能，个人感觉只有全局依赖一起升级这条路，升级的话，还需要改原有的业务代码，实际上相当于重写当前项目，工作量还是蛮大的，暂时搁浅。
+ 
+ ### 七 restful
+ * 用URL定位资源，用HTTP描述操作：
+   在设计web接口的时候，REST主要是用于定义接口名，接口名一般是用名次写，不用动词，那怎么表达“获取”或者“删除”或者“更新”这样的操作呢——用请求类型来区分。比如，我们有一个friends接口，对于“朋友”我们有增删改查四种操作，怎么定义REST接口？
+   
+   1、增加一个朋友，uri: generalcode.cn/v1/friends 接口类型：POST 
+   
+   2、删除一个朋友，uri: generalcode.cn/va/friends 接口类型：DELETE
+   
+   3、修改一个朋友，uri: generalcode.cn/va/friends 接口类型：PUT
+   
+   4、查找朋友，uri: generalcode.cn/va/friends 接口类型：GET
+   
+   上面我们定义的四个接口就是符合REST协议的，请注意，这几个接口都没有动词，只有名词friends，都是通过Http请求的接口类型来判断是什么业务操作。
+   举个反例：generalcode.cn/va/deleteFriends 该接口用来表示删除朋友，这就是不符合REST协议的接口。
+   
+   用HTTP Status Code传递Server的状态信息。比如最常用的 200 表示成功，500 表示Server内部错误，403表示Bad Request等。（反例：传统web开发返回的状态码一律都是200，其实不可取。）
+   
+   那这种风格的接口有什么好处呢？前后端分离。前端拿到数据只负责展示和渲染，不对数据做任何处理。后端处理数据并以JSON格式传输出去，定义这样一套统一的接口，在web，ios，android三端都可以用相同的接口，是不是很爽？！
+   
