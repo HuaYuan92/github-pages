@@ -165,5 +165,26 @@ bind 方法不会立即执行，而是返回一个改变了上下文 this 后的
  
  - 插件进程：主要是负责插件的运行，因插件易崩溃，所以需要通过插件进程来隔离，以保证插件进程崩溃不会对浏览器和页面造成影响。
  
+ ### 九 Promise
+ 
+ ### 十 JS事件队列
+  * 所有同步任务都在主线程上执行，形成一个执行栈（execution context stack）
+  * 等待任务的回调结果进入一种任务队列(task queue)。
+  * 当主执行栈中的同步任务执行完毕后才会读取任务队列，任务队列中的异步任务（即之前等待任务的回调结果）会塞入主执行栈，
+  * 异步任务执行完毕后会再次进入下一个循环。
+  
+  在实际情况中，上述的任务队列(task queue)中的异步任务分为两种：微任务（micro task)和宏任务（macro task)。
+  * micro task事件：Promises(浏览器实现的原生Promise)、MutationObserver、process.nextTick
+  * macro task事件：setTimeout、setInterval、setImmediate、I/O、UI rendering
+  * 这里注意：script(整体代码)即一开始在主执行栈中的同步代码本质上也属于macrotask，属于第一个执行的task
+  ```
+  microtask和macotask执行规则：
+   *  macrotask按顺序执行，浏览器的ui绘制会插在每个macrotask之间；
+   *  microtask按顺序执行，会在如下情况下执行：
+      * 每个callback之后，只要没有其他的JS在主执行栈中；
+      * 每个macrotask结束时
+  
+```
+ 
  
    
