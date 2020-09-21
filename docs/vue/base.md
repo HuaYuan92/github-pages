@@ -185,6 +185,35 @@ bind 方法不会立即执行，而是返回一个改变了上下文 this 后的
       * 每个macrotask结束时
   
 ```
+ ## 十一 Hybrid App H5与原生的交互原理
+ * 单向通信
  
+   1、不需要传参的通信，如页面跳转；
+   2、需要传参的通信：URL传参/window传参
+   ```
+   因为 app 是宿主，可以直接访问 h5，所以这种调用比较简单，就是在 h5 中曝露一些全局对象（包括方法），然后在原生 app中调用这些对象。
+   H5：
+   window.sdk={
+    double = value => value * 2
+   }
+  
+   IOS
+   NSString *func = @"window.sdk.double(10)";
+   NSString *str = [webview stringByEvaluatingJavaScriptFromString:func];// 20
+
+   ```
+  
+ * 双向通信
  
+   上面说的单向通信的交互通常会使一个简单的方法变得非常割裂，在一些稍微复杂的场景之下，双端的维护成本很高，因此通常我们使用双向通信的时候更多一些。我们可以在回调函数中做很多事情。这里就要提到大家耳熟能详的[WebViewJavaScriptBridge](https://www.cnblogs.com/dailc/p/5931324.html)
+ 
+   WebViewJavaScriptBridge的基本原理简单来说就是，建立一个桥梁，然后注册自己，调用他人。
+   
+   H5触发url scheme->Native捕获url scheme->原生分析,执行->原生调用h5
+   
+   * 把 OC 的方法注册到桥梁中，让 JS 去调用。
+ 
+   * 把 JS 的方法注册在桥梁中，让 OC 去调用。
+  
+
    
