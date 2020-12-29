@@ -30,7 +30,8 @@ module.exports = {
                 'optimised',
                 'bugs',
                 'website',
-                'data'
+                'data',
+                'article'
             ],
         },
     }
