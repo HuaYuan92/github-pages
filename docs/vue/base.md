@@ -4,7 +4,7 @@
 * localStorage 生命周期是永久，这意味着除非用户显示在浏览器提供的UI上清除localStorage信息，否则这些信息将永远存在。存放数据大小为一般为5MB,而且它仅在客户端（即浏览器）中保存，不参与和服务器的通信。
 * sessionStorage 为每一个数据源维持一个存储区域，在浏览器打开期间存在，包括页面重新加载。不同的浏览器存储的上限也不一样，但大多数浏览器把上限限制在5MB以下。
 
-## 二 function传值属于值传递
+## 二 function传值属于值传递（堆栈概念）
 * 值类型，当为函数传递参数的时候，是将此值复制一份传递给函数，所以在函数执行之后，num本身的值并没有被改变，函数中被改变的值仅仅是一个副本而已。例如`string`，12
 * 引用类型，当为函数传递参数的时候，是传递的web对象的引用，也就是此对象的内存地址，所以在函数中修改属性的对象就是函数外面创建的对象本身。
 ```
@@ -211,9 +211,75 @@ bind 方法不会立即执行，而是返回一个改变了上下文 this 后的
    
    H5触发url scheme->Native捕获url scheme->原生分析,执行->原生调用h5
    
+   URL Scheme 是一种特殊的 URL，一般用于在 Web 端唤醒 App，甚至跳转到 App 的某个页面，比如在某个手机网站上付款的时候，可以直接拉起支付宝支付页面。
+   
+   这里有个小例子，你可以在浏览器里面直接输入 weixin://，系统就会提示你是否要打开微信。输入 mqq:// 就会帮你唤起手机 QQ。
+   
    * 把 OC 的方法注册到桥梁中，让 JS 去调用。
  
    * 把 JS 的方法注册在桥梁中，让 OC 去调用。
+  
+  ## 十二 为什么DOM操作影响性能
+  
+  在浏览器当中，dom的实现和ECMAScript的实现是分离的。
+  
+  例如，在IE中，ECMAScrit的实现在jscript.dll中，而DOM的实现在mshtml.dll中；在Chrome中使用WebKit中的 WebCore处理DOM和渲染，但ECMAScript是在V8引擎中实现的，其他浏览器的情况类似。
+  
+  因此，操作dom，就是通过js代码调用dom的接口，就相当于两个相互独立的模块发生了交互。这样，相比于在同一个模块当中互相调用，这种跨模块的调用它的性能损耗是非常高的。
+  
+  然而，dom操作影响性能最主要是因为它导致了浏览器的重绘（repaint）和重排（reflow）。
+  
+  为了可以更加深刻地理解重绘和重排对性能的影响，需要简单了解一下浏览器的渲染原理。
+  
+  从下载文档到渲染页面的过程中，浏览器会通过解析HTML文档来构建DOM树，解析CSS产生CSS规则树。JavaScript代码在解析过程中， 可能会修改生成的DOM树和CSS规则树。之后根据DOM树和CSS规则树构建渲染树，在这个过程中CSS会根据选择器匹配HTML元素。渲染树包括了每 个元素的大小、边距等样式属性，渲染树中不包含隐藏元素及head元素等不可见元素。最后浏览器根据元素的坐标和大小来计算每个元素的位置，并绘制这些元 素到页面上。无论何时总会有一个初始化的页面布局伴随着一次绘制。
+  
+  优化方法：
+  * 将dom操作积累起来作批量操作
+  * 合并多次的DOM操作为单次的DOM操作
+  * 使用文档片段
+  * 通过设置DOM元素的display样式为none来隐藏元素
+  * 克隆DOM元素到内存中
+  * 设置具有动画效果的DOM元素的position属性为fixed或absolute
+  
+  ## 十三 HTTP Request请求参数
+  * HOST：HOST表示请求的目的地，也就是请求的Web服务器域名地址
+  * User-Agent：User-Agent记录着HTTP客户端运行的浏览器类型的详细信息，Web服务器可通过User-Agent判断当前HTTP请求客户端浏览器的类别
+  * Accept：Accept的作用是向Web服务器申明客户端浏览器可以接收的媒体类型（MIME）的资源，简单来说就是表示浏览器支持的MIME类型
+  * Accept-Language：Accept-Language指定HTTP客户端浏览器用来返回信息时优先选择的语言
+  * Accept-Encoding：Accept-Encoding指定客户端浏览器可以支持的Web服务器返回内容压缩编码的类型
+  * Content-Type：Content-Type表示HTTP请求提交的内容类型，只有在POST方法提交时才需要设置此属性
+  * Content-Length：Content-Type是请求体内容的长度，单位字节（byte），并不包含请求行和请求头的数据长度
+  * Connection：Connection表示是否需要持久连接，如果Web服务器接收到Connection的属性值为Keep-Alive，或者请求所使用的协议版本是HTTP 1.1（默认持久连接），此时就会采用持久连接
+  * Keep-Alive：Keep-Alive指定HTTP持久连接的时长，用来保证客户端到服务器的连接持续有效。当出现对服务器的后续请求时，Keep-Alive可以避免重建连接
+  * Cookie
+  * Refer：Refer包含了一个URL，表示用户从该URL页面触发访问当前请求的页面
+  * Cache-Control：Cache-Control用于指定请求和响应遵循的缓存机制，在请求消息或响应消息中设置Cache-Control并不会修改另一个消息处理过程中的缓存处理过程
+  
+  ## 十四 HTTP Request response header
+  * Set-Cookie：非常重要的header, 用于把cookie 发送到客户端浏览器， 每一个写入cookie都会生成一个Set-Cookie
+  * Content-Type：WEB服务器告诉浏览器自己响应的对象的类型和字符集
+  * Content-Length：指明实体正文的长度，以字节方式存储的十进制数字来表示
+  * Content-Encoding：WEB服务器表明自己使用了什么压缩方法（gzip，deflate）压缩响应中的对象
+  * Content-Language：WEB服务器告诉浏览器自己响应的对象的语言者
+  * Server：指明HTTP服务器的软件信息
+  * Connection：是否需要持久连接
+  * Location：用于重定向一个新的位置, 包含新的URL地址
+  
+  ## 十五 [前端安全](https://zhuanlan.zhihu.com/p/83865185)
+  * crsf攻击如何获取用户cookie==>在攻击者页面使用script,img,iframe等方式加载攻击对象的地址，这样就会自动带上cookie
+  ## 十六 new 函数
+  1、首先创建一个空的对象，空对象的__proto__属性指向构造函数的原型对象  
+  2、把上面创建的空对象赋值构造函数内部的this，用构造函数内部的方法修改空对象  
+  3、如果构造函数返回一个非基本类型的值，则返回这个值，否则上面创建的对象  
+  ```$xslt
+function _new(fn, ...arg) {
+    var obj = Object.create(fn.prototype);
+    const result = fn.apply(obj, ...arg);
+    return Object.prototype.toString.call(result) == '[object Object]' ? result : obj;
+}
+```
+
+  
   
 
    
